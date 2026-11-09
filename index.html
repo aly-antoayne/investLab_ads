@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="InvestLab: simulador educacional de investimentos.">
+    <title>InvestLab</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/app.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>InvestLab</h1>
+        <p>Simule. Compare. Aprenda.</p>
+        <!-- Etapa futura: adicionar a navegação. -->
+    </header>
+
+    <main>
+        <form id="form-simulador">
+            <section aria-labelledby="titulo-simulador">
+                <h2 id="titulo-simulador">Simulador de investimentos</h2>
+                <p>Planeje seu futuro a partir de valores e taxas hipotéticas.</p>
+                <div class="campo">
+                    <label for="valor-inicial">Investimento inicial (R$)</label>
+                    <input type="number" id="valor-inicial" name="valor-inicial" min="0" step="0.01" required>
+                </div>
+                <div class="campo">
+                    <label for="aporte-mensal">Aporte Mensal (R$)</label>
+                    <input type="number" id="aporte-mensal" name="aporte-mensal" min="0" step="0.01" required>
+                </div>
+                <div class="campo">
+                    <label for="prazo-anos">Prazo em anos:</label>
+                    <input type="number" id="prazo-anos" name="prazo-anos" min="1" max="50" step="1" required>
+                </div>
+                <div class="campo">
+                    <label for="rent-anual">Rentabilidade Anual (%)</label>
+                    <input type="number" id="rent-anual" name="rent-anual" min="-99.99" step="0.01" required>
+                </div>
+                <div class="campo">
+                    <label for="modalidade">Modalidade</label>
+                    <select id="modalidade" name="modalidade" required>
+        <option value=""> Selecione uma modalidade</option>
+        <option value="cdb">CDB</option>
+        <option value="lci/lca">LCI/LCA</option>
+        <option value="tesouro-direto">Tesouro Direto</option>
+        <option value="cripto">Criptomoeda</option>
+      </select>
+                </div>
+                <div class="campo">
+                    <button type="submit">Simular</button>
+                </div>
+            </section>
+        </form>
+        <section id="resultados" aria-labelledby="titulo-resultados">
+            <h2 id="titulo-resultados">Resultado da simulação</h2>
+            <p>Preencha o formulário para calcular sua projeção.</p>
+
+            <p>Patrimônio final estimado:
+                <span id="patrimonio-final">—</span>
+            </p>
+
+            <p>Total investido:
+                <span id="total-investido">—</span>
+            </p>
+
+            <p>Total de rendimentos:
+                <span id="total-rendimentos">—</span>
+            </p>
+
+            <p>Rentabilidade acumulada:
+                <span id="rentabilidade-acumulada">—</span>
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Projeto educacional. As simulações não garantem rentabilidade nem são recomendações de investimento.</p>
+    </footer>
+</body>
+
+</html>

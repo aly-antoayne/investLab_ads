@@ -1,3 +1,4 @@
+
 # InvestLab
 
 Plataforma web educacional voltada à simulação e comparação de investimentos de longo prazo.
