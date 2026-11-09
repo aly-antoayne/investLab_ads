@@ -1,25 +1,39 @@
-# InvestLab — do zero
 
-Esta é a base de estudo do projeto. O simulador ainda não está implementado.
-Vamos construir uma funcionalidade de cada vez, mantendo o código simples e compreensível.
+# InvestLab
 
-## Como começar
+Plataforma web educacional voltada à simulação e comparação de investimentos de longo prazo.
 
-1. Abra esta pasta no VS Code.
-2. Abra `index.html` no navegador. Nesta etapa, não é necessário instalar nada.
-3. Edite o HTML, salve e atualize o navegador para conferir as alterações.
+## Sobre o projeto
 
-## Arquivos
+O InvestLab está sendo desenvolvido como um projeto acadêmico para aplicar conhecimentos de desenvolvimento web e matemática financeira.
 
-- `index.html`: conteúdo e estrutura da página.
-- `css/styles.css`: aparência da aplicação.
-- `js/app.js`: interações com o usuário; ainda sem implementação.
-- `PLANO.md`: etapas de desenvolvimento e primeira tarefa.
+A proposta é permitir que o usuário informe um valor inicial, aportes mensais, prazo e uma taxa de rentabilidade hipotética para visualizar uma projeção do seu patrimônio.
 
-## Tecnologias previstas
+## Funcionalidades previstas
 
-HTML5, CSS3 e JavaScript. Adicionaremos Tailwind CSS na etapa de interface, Chart.js na etapa de gráficos e localStorage na etapa de histórico. Nenhuma dessas bibliotecas precisa ser instalada agora.
+- Simulação de investimentos com juros compostos.
+- Comparação entre CDB, LCI/LCA, Tesouro Direto e criptomoedas.
+- Visualização da evolução patrimonial por meio de gráficos.
+- Dashboard com indicadores financeiros.
+- Histórico de simulações salvo no navegador.
 
-## Forma de trabalho
+## Tecnologias
 
-Você escreve cada etapa e envia seu código para revisão. As correções e sugestões devem preservar sua estrutura e vir acompanhadas de explicações. As fórmulas e premissas serão documentadas quando implementarmos os cálculos.
+- HTML5
+- CSS3
+- Tailwind CSS
+- JavaScript
+- Chart.js
+- LocalStorage
+
+## Status
+
+🚧 Em desenvolvimento, começando pela estrutura HTML do simulador e da área de resultados.
+
+## Objetivo
+
+Construir uma aplicação simples, intuitiva e responsiva que ajude a compreender como o tempo, os aportes e as taxas influenciam o crescimento do patrimônio.
+
+## Aviso educacional
+
+Os resultados serão estimativas baseadas em hipóteses e não representarão garantia de rentabilidade ou recomendação de investimento.
