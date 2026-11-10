@@ -7,6 +7,7 @@
     <meta name="description" content="InvestLab: simulador educacional de investimentos.">
     <title>InvestLab</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script src="js/app.js" defer></script>
 </head>
 
@@ -24,11 +25,13 @@
                 <p>Planeje seu futuro a partir de valores e taxas hipotéticas.</p>
                 <div class="campo">
                     <label for="valor-inicial">Investimento inicial (R$)</label>
-                    <input type="number" id="valor-inicial" name="valor-inicial" min="0" step="0.01" required>
+                    <input type="text" id="valor-inicial" name="valor-inicial" inputmode="numeric" placeholder="0,00"
+                        required>
                 </div>
                 <div class="campo">
                     <label for="aporte-mensal">Aporte Mensal (R$)</label>
-                    <input type="number" id="aporte-mensal" name="aporte-mensal" min="0" step="0.01" required>
+                    <input type="text" id="aporte-mensal" name="aporte-mensal" inputmode="numeric" placeholder="0,00"
+                        required>
                 </div>
                 <div class="campo">
                     <label for="prazo-anos">Prazo em anos:</label>
@@ -50,6 +53,35 @@
                 </div>
                 <p id="mensagem-erro" role="alert"></p>
                 <div class="campo">
+
+                    <div id="configuracao-cdb" hidden>
+                        <div class="campo">
+                            <label for="tipo-cdb">Tipo de rentabilidade do CDB</label>
+
+                            <select id="tipo-cdb" name="tipo-cdb">
+                                <option value="prefixado">Prefixada</option>
+                                <option value="cdi">Percentual do CDI</option>
+                            </select>
+                        </div>
+
+                        <div id="campos-cdi" hidden>
+                            <div class="campo">
+                                <label for="percentual-cdi">Percentual do CDI (%)</label>
+
+                                <input type="number" id="percentual-cdi" name="percentual-cdi" min="0" max="300"
+                                    step="0.01" value="100" disabled>
+                            </div>
+
+                            <div class="campo">
+                                <label for="taxa-cdi">
+                                    CDI hipotético (% ao ano)
+                                </label>
+
+                                <input type="number" id="taxa-cdi" name="taxa-cdi" min="0" max="50" step="0.01"
+                                    value="10" disabled>
+                            </div>
+                        </div>
+                    </div>
                     <button type="submit">Simular</button>
                 </div>
             </section>
@@ -57,6 +89,9 @@
         <section id="resultados" aria-labelledby="titulo-resultados">
             <h2 id="titulo-resultados">Resultado da simulação</h2>
             <p>Preencha o formulário para calcular sua projeção.</p>
+            <p>Modalidade simulada:
+                <span id="modalidade-resultado">—</span>
+            </p>
 
             <p>Patrimônio final estimado:
                 <span id="patrimonio-final">—</span>
@@ -73,6 +108,35 @@
             <p>Rentabilidade acumulada:
                 <span id="rentabilidade-acumulada">—</span>
             </p>
+
+            <h3>Evolução do patrimônio</h3>
+
+            <div>
+                <canvas id="grafico-evolucao" role="img" aria-label="Evolução mensal do patrimônio bruto em reais">
+                </canvas>
+            </div>
+
+            <button type="button" id="salvar-simulacao">
+                Salvar simulação
+            </button>
+
+            <p id="mensagem-historico" role="status"></p>
+        </section>
+        <section id="historico" aria-labelledby="titulo-historico">
+            <h2 id="titulo-historico">Histórico de simulações</h2>
+            <p id="aviso-historico" role="status"></p>
+            <ul id="lista-historico"></ul>
+            <button type="button" id="comparar-simulacoes">
+                Comparar selecionadas
+            </button>
+
+            <p id="mensagem-comparacao" role="status"></p>
+            <div id="resultado-comparacao"></div>
+            <div>
+                <canvas id="grafico-comparacao" role="img"
+                    aria-label="Comparação do patrimônio bruto final das simulações">
+                </canvas>
+            </div>
         </section>
     </main>
 

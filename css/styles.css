@@ -82,3 +82,38 @@ footer {
 #mensagem-erro:empty {
     display: none;
 }
+
+.positivo {
+    color: #166534;
+}
+
+.negativo {
+    color: #b91c1c;
+}
+
+#resultado-comparacao {
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
+#resultado-comparacao table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#resultado-comparacao caption {
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+#resultado-comparacao th,
+#resultado-comparacao td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#resultado-comparacao th {
+    background-color: #e5e7eb;
+}
