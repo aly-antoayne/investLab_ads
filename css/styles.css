@@ -73,3 +73,12 @@ footer {
 #resultados span {
     font-weight: bold;
 }
+
+#mensagem-erro {
+    color: #b91c1c;
+    font-weight: bold;
+}
+
+#mensagem-erro:empty {
+    display: none;
+}
