@@ -1,11 +1,62 @@
 const formulario = document.getElementById("form-simulador");
+const campoModalidade = document.getElementById("modalidade");
 let graficoComparacao = null;
 const formatoCampo = new Intl.NumberFormat("pt-BR", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
 });
 
+const ativoCripto = document.getElementById("ativo-cripto");
+const configuracaoCripto = document.getElementById("configuracao-cripto");
+
+function atualizarCamposCripto() {
+    const ehCripto = campoModalidade.value === "cripto";
+
+    configuracaoCripto.hidden = !ehCripto;
+    ativoCripto.disabled = !ehCripto;
+    ativoCripto.required = ehCripto;
+}
+
+campoModalidade.addEventListener("change", atualizarCamposCripto);
+
+atualizarCamposCripto();
+
 const botaoComparar = document.getElementById("comparar-simulacoes");
+
+function descreverModalidade(simulacao) {
+    const nomes = {
+        "cdb": "CDB",
+        "lci/lca": "LCI / LCA",
+        "tesouro-direto": "Tesouro Direto",
+        "cripto": "Criptomoedas"
+    };
+
+    if (simulacao.modalidade === "cdb") {
+        if (simulacao.tipoCdb === "cdi") {
+            const percentual = simulacao.percentualDoCdi
+                .toLocaleString("pt-BR");
+
+            const referencia = simulacao.cdiAnual
+                .toLocaleString("pt-BR");
+
+            return "CDB — " + percentual +
+                "% do CDI (CDI hipotético: " +
+                referencia + "% a.a.)";
+        }
+
+        return "CDB prefixado";
+    }
+    if (simulacao.modalidade === "cripto") {
+        const nomesCripto = {
+            "bitcoin": "Bitcoin",
+            "ethereum": "Ethereum"
+        };
+
+        return nomesCripto[simulacao.ativoCripto]
+            ?? "Criptomoedas — ativo não informado";
+    }
+    return nomes[simulacao.modalidade] ?? simulacao.modalidade;
+}
 
 function limparComparacao() {
     document.getElementById("resultado-comparacao").replaceChildren();
@@ -80,7 +131,7 @@ botaoComparar.addEventListener("click", function () {
             "Inicial",
             "Aporte mensal",
             "Prazo",
-            "Taxa anual",
+            "Taxa anual usada no cálculo",
             "Total investido",
             "Patrimônio bruto",
             "Rendimentos",
@@ -103,7 +154,7 @@ botaoComparar.addEventListener("click", function () {
             const linha = document.createElement("tr");
 
             const valores = [
-                simulacao.modalidade,
+                descreverModalidade(simulacao),
                 moeda.format(simulacao.valorInicial),
                 moeda.format(simulacao.aporteMensal),
                 simulacao.prazoAnos + " anos",
@@ -215,7 +266,14 @@ function carregarSimulacao(simulacao) {
     document.getElementById("modalidade").value =
         simulacao.modalidade;
 
-    tipoCdb.value = "prefixado";
+    tipoCdb.value = simulacao.tipoCdb ?? "prefixado";
+
+    taxaCdi.value = simulacao.cdiAnual ?? 10;
+    percentualCdi.value = simulacao.percentualDoCdi ?? 100;
+
+    ativoCripto.value = simulacao.ativoCripto ?? "bitcoin";
+    atualizarCamposCripto();
+
     atualizarCamposCdb();
     formulario.requestSubmit();
 }
@@ -293,7 +351,7 @@ function exibirHistorico() {
             rotulo.appendChild(selecao);
             rotulo.appendChild(document.createTextNode(
                 " " + data + " | " +
-                simulacao.modalidade + " | " +
+                descreverModalidade(simulacao) + " | " +
                 simulacao.prazoAnos + " anos | " +
                 "Patrimônio bruto: " +
                 moeda.format(simulacao.patrimonioFinal)
@@ -331,6 +389,15 @@ function exibirHistorico() {
 
 exibirHistorico();
 
+function calcularTaxaAnualCdi(cdiAnual, percentualDoCdi) {
+    const cdiDecimal = cdiAnual / 100;
+    const proporcao = percentualDoCdi / 100;
+
+    const taxaDecimal = Math.pow(1 + cdiDecimal, proporcao) - 1;
+
+    return taxaDecimal * 100;
+}
+
 function calcularPatrimonio(valorInicial, aporteMensal, prazoMeses, taxaMensal) {
     let patrimonio = valorInicial;
     const evolucao = [valorInicial];
@@ -356,21 +423,39 @@ formulario.addEventListener("submit", function (evento) {
 
     const mensagemErro = document.getElementById("mensagem-erro");
     mensagemErro.textContent = "";
-    
-    if (
-    campoModalidade.value === "cdb" &&
-    tipoCdb.value === "cdi"
-) {
-    mensagemErro.textContent =
-        "O cálculo por percentual do CDI será habilitado na próxima etapa.";
-    return;
-}
+
 
     const valorInicial = lerValorMonetario("valor-inicial");
     const aporteMensal = lerValorMonetario("aporte-mensal");
     const prazoAnos = document.getElementById("prazo-anos").valueAsNumber;
-    const rentabilidadeAnual = document.getElementById("rent-anual").valueAsNumber;
     const modalidade = document.getElementById("modalidade").value;
+    const usaCdi = modalidade === "cdb" && tipoCdb.value === "cdi";
+
+    let rentabilidadeAnual;
+
+    if (usaCdi) {
+        const referenciaCdi = taxaCdi.valueAsNumber;
+        const percentualDoCdi = percentualCdi.valueAsNumber;
+
+        if (
+            !Number.isFinite(referenciaCdi) ||
+            !Number.isFinite(percentualDoCdi) ||
+            referenciaCdi < 0 || referenciaCdi > 50 ||
+            percentualDoCdi < 0 || percentualDoCdi > 300
+        ) {
+            mensagemErro.textContent =
+                "Informe CDI entre 0% e 50% e percentual do CDI entre 0% e 300%.";
+            return;
+        }
+
+        rentabilidadeAnual = calcularTaxaAnualCdi(
+            referenciaCdi,
+            percentualDoCdi
+        );
+    } else {
+        rentabilidadeAnual =
+            document.getElementById("rent-anual").valueAsNumber;
+    }
     const valores = [
         valorInicial,
         aporteMensal,
@@ -404,7 +489,13 @@ formulario.addEventListener("submit", function (evento) {
         "tesouro-direto",
         "cripto"
     ];
-
+    if (
+        modalidade === "cripto" &&
+        !["bitcoin", "ethereum"].includes(ativoCripto.value)
+    ) {
+        mensagemErro.textContent = "Selecione uma criptomoeda válida.";
+        return;
+    }
     if (!modalidadesPermitidas.includes(modalidade)) {
         mensagemErro.textContent = "Selecione uma modalidade válida.";
         return;
@@ -439,10 +530,14 @@ formulario.addEventListener("submit", function (evento) {
         prazoAnos: prazoAnos,
         rentabilidadeAnual: rentabilidadeAnual,
         modalidade: modalidade,
+        tipoCdb: modalidade === "cdb" ? tipoCdb.value : null,
+        cdiAnual: usaCdi ? taxaCdi.valueAsNumber : null,
+        percentualDoCdi: usaCdi ? percentualCdi.valueAsNumber : null,
         patrimonioFinal: patrimonioFinal,
         totalInvestido: totalInvestido,
         totalRendimentos: totalRendimentos,
-        rentabilidadeAcumulada: rentabilidadeAcumulada
+        rentabilidadeAcumulada: rentabilidadeAcumulada,
+        ativoCripto: modalidade === "cripto" ? ativoCripto.value : null
     };
 
     console.log("Última simulação:", ultimaSimulacao);
@@ -499,7 +594,7 @@ formulario.addEventListener("submit", function (evento) {
     };
 
     document.getElementById("modalidade-resultado").textContent =
-        nomesModalidades[modalidade];
+        descreverModalidade(ultimaSimulacao);
 
     console.log("Prazo em meses:", prazoMeses);
     console.log("Taxa mensal (%):", taxaMensal * 100);
@@ -602,7 +697,6 @@ botaoSalvar.addEventListener("click", function () {
     }
 });
 
-const campoModalidade = document.getElementById("modalidade");
 const tipoCdb = document.getElementById("tipo-cdb");
 const configuracaoCdb = document.getElementById("configuracao-cdb");
 const camposCdi = document.getElementById("campos-cdi");
@@ -621,6 +715,11 @@ function atualizarCamposCdb() {
 
     percentualCdi.required = usaCdi;
     taxaCdi.required = usaCdi;
+
+    const campoTaxaAnual = document.getElementById("rent-anual");
+
+    campoTaxaAnual.disabled = usaCdi;
+    campoTaxaAnual.required = !usaCdi;
 }
 
 campoModalidade.addEventListener("change", atualizarCamposCdb);
