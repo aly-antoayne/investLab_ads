@@ -43,25 +43,27 @@ Em desenvolvimento. Atualizado em **11 de novembro de 2026**, conforme as etapas
 - Limpeza da comparação quando o histórico é reconstruído após salvar ou excluir registros.
 - CDB com taxa prefixada ou percentual de um CDI anual hipotético configurável. As premissas são preservadas ao salvar e carregar.
 - Identificação do tipo de CDB e das premissas de CDI nos resultados, no histórico e na tabela comparativa.
-- Modalidade genérica de criptomoedas com taxa hipotética positiva ou negativa.
+- Seleção de Bitcoin ou Ethereum na modalidade de criptomoedas, com taxa hipotética positiva ou negativa. A exibição do seletor foi corrigida e confirmada.
 
 ### Etapa atual
 
-A seleção específica de Bitcoin e Ethereum está em desenvolvimento e ainda não está disponível. A correção dos erros de sintaxe e de ordem de inicialização não representa a conclusão dessa funcionalidade. O próximo passo é verificar sua exibição e funcionamento antes de marcá-la como concluída.
+A seleção de Bitcoin e Ethereum está disponível. O bloco de criptomoedas foi separado do bloco de CDB no HTML, permitindo que cada configuração seja exibida independentemente. Antes da correção, esconder a configuração de CDB também escondia o seletor de criptomoedas que estava dentro dela.
+
+O código já contempla a identificação do ativo no resultado, no registro salvo e na tabela comparativa, além da restauração da seleção ao carregar. Ainda falta confirmar o teste completo de **selecionar → simular → salvar → carregar → comparar** para essa nova identificação.
 
 ### Limites da versão atual
 
 - Os resultados são **brutos**: ainda não há desconto de impostos ou custos.
 - O CDI é constante e hipotético. A taxa anual estimada usa a aproximação didática `(1 + CDI / 100) ** (percentualDoCDI / 100) - 1`, em decimal; não reproduz a apuração diária de um produto real.
 - LCI/LCA e Tesouro Direto utilizam a taxa anual informada, sem regras específicas de tributação ou indexação implementadas.
-- Criptomoedas utilizam a taxa hipotética digitada, sem consulta de cotações. A seleção específica de Bitcoin ou Ethereum ainda não está disponível.
+- Bitcoin e Ethereum utilizam a taxa hipotética digitada, sem consulta de cotações. Escolher o ativo não altera automaticamente a taxa nem a fórmula de cálculo.
 - Os cenários salvos podem ter aportes, taxas e prazos diferentes. Um patrimônio final maior, isoladamente, não indica uma modalidade melhor.
 - O histórico fica no navegador e na origem em que foi salvo; não há sincronização entre dispositivos.
 - A validação realizada até aqui é manual. Ainda não há uma suíte automatizada de testes para esta versão.
 
 ### Próximas entregas
 
-- Concluir e testar a seleção de Bitcoin e Ethereum, incluindo a identificação do ativo ao salvar, carregar e comparar simulações.
+- Confirmar o teste completo de Bitcoin e Ethereum: selecionar o ativo, simular, salvar, carregar e conferir sua identificação na comparação.
 - Implementar e documentar estimativas de impostos e custos aplicáveis, distinguindo valores brutos e líquidos.
 - Completar as premissas específicas das modalidades, incluindo a opção indexada do Tesouro Direto.
 - Construir o dashboard com distribuição dos investimentos, definindo a alocação da carteira sem somar cenários alternativos como se fossem aplicações simultâneas.
